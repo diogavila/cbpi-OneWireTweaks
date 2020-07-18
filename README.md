@@ -1,14 +1,38 @@
-# Notice: as of May 22, 2019 this plugin is no longer being developed or maintained. For my recent work with brewery control software, please see my open-source brewing dashboard, [brew2](https://github.com/jangevaare/brew2).
+# [cbpi-OneWireTweaks] (https://github.com/diogavila/cbpi-OneWireTweaks)
 
-## cbpi-OneWireAdvanced
-### Introduction
-This CraftBeerPi 3.0 plugin provides a new sensor type called OneWireAdvanced. This plugin attempts to provide even more control over DS18B20 temperature readings in CraftBeerPi. It allows setting of:
- * sensor bias,
- * sensor precision,
- * exponential moving average,
+## Introduction
+
+Plugin for [CraftBeerPi3](http://web.craftbeerpi.com/) [[GitHub](https://github.com/Manuel83/craftbeerpi3)].
+This CraftBeerPi 3.0 plugin was based on [OneWireAdvanced](https://github.com/jangevaare/cbpi-OneWireAdvanced/) [[GitHub], that is no longer being maintained. It provides a new sensor type called OneWireTweaks. This plugin attempts to provide even more control over DS18B20 temperature readings in CraftBeerPi. It allows setting of:
+ * sensor calibration based on quadratic error, that is standard for DS18B20.Based on a quadratic regression it is possible to determine the bias,linear coeficient and quatratic coeficient
+ * sensor precision, allowing faster temperature reading
+ * exponential moving average,to reduce noise from the sensor output
  * low and high value filters,
  * update interval, and,
  * alert options.
 
-### Preview
+## Installation
+
+* Clone the repo into the CBPi3 _plugins_ directory:
+  
+```
+git clone https://github.com/diogavila/cbpi-OneWireTweaks.git ~/craftbeerpi3/modules/plugins/OneWireTweaks      ### CHANGE THIS TO YOUR CBPi3 DIRECTORY
+```
+
+* Restart CraftBeerPi3.
+  
+```
+sudo /etc/init.d/craftbeerpiboot restart
+```
+
+## Usage
+
+All you need to do is install the plugin, set the sensors as OneWireTweaks and set the desired parameters.
+
+## Author
+
+* [Diogo d'Ávila](https://github.com/diogavila)
+
+## Preview
+
 <center><img src="OneWireAdvanced.png" width="480" alt="Sensor configuration options"></center>
