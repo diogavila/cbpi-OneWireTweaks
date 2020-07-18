@@ -1,4 +1,4 @@
-# [cbpi-OneWireTweaks] (https://github.com/diogavila/cbpi-OneWireTweaks)
+# cbpi-OneWireTweaks
 
 ## Introduction
 
