@@ -88,7 +88,7 @@ timeout_description = "0ms will disable these notifications completely"
 
 
 @cbpi.sensor
-class OneWireAdvanced(SensorActive):
+class OneWireTweaks(SensorActive):
     address = Property.Select("Address", get_sensors())
     bias = Property.Number(
         ifelse_celcius("Bias (°C)", "Bias (°F)"),
