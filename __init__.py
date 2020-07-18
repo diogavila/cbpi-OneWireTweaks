@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
-import os, time, subprocess
+import os
+import subprocess
+import time
+
 from modules import cbpi
 from modules.core.hardware import SensorActive
 from modules.core.props import Property
@@ -40,20 +43,6 @@ def set_precision(precision, address):
         )
 
 
-# def get_temp(address):
-#     # Bitbang the 1-wire interface.
-#     try:
-#         s = subprocess.check_output('cat /sys/bus/w1/devices/%s/w1_slave' % address, shell=True).strip()
-#         lines = s.split('\n')
-#         line0 = lines[0].split()
-#         if line0[-1] == 'YES':  # CRC check was good.
-#             line1 = lines[1].split()
-#             temp = float(line1[-1][2:])/1000.0
-#     except:
-#         temp = 9999.9
-#     return temp
-
-
 def get_temp(address):
     with open(
         "/sys/bus/w1/devices/w1_bus_master1/%s/w1_slave" % address, "r"
@@ -67,59 +56,50 @@ def get_temp(address):
 
 # Property descriptions
 bias_description = "Sensor bias may be positive or negative."
-
 linear_coef_description = "Linear calibration coeficient"
-
 quadratic_coef_description = "Quadratic calibration coeficient"
-
 alpha_description = "The parameter α determines the relative weighting of temperature readings in an exponential moving average. α must be >0 and <=1. At α=1, all weight is placed on the current reading. T_i = α*t_i + (1-α)*T_i-1)"
-
 precision_description_C = "DS18B20 sensors can be set to provide 9 bit (0.5°C, 93.75ms conversion), 10 bit (0.25°C, 187.5ms conversion), 11 bit (0.125°C, 375 ms conversion), or 12 bit precision (0.0625°C, 750ms conversion)."
-
 precision_description_F = "DS18B20 sensors can be set to provide 9 bit (0.9°F, 93.75ms conversion), 10 bit (0.45°F, 187.5ms conversion), 11 bit (0.225°F, 375 ms conversion), or 12 bit precision (0.1125°F, 750ms conversion)."
-
 update_description = "The update interval is the target time between polling the temperature sensor in milliseconds. While there is sensor temperature conversion time based on precision (see precision description), there is also computational overhead associated with communicating with the sensor, checking for errors, and moving average calculation. An update interval < 2000ms is not recommended. <2000ms may lend to excess warning messages. This update interval may need to be higher on systems with many sensors. Software improvements may eventually lower this recommendation."
-
 low_filter_description = "Values below the low value filter threshold will be ignored. Units automatically selected."
-
 high_filter_description = "Values above the high value filter threshold will be ignored. Units automatically selected."
-
 timeout_description = "0ms will disable these notifications completely"
 
 
 @cbpi.sensor
 class OneWireTweaks(SensorActive):
-    address = Property.Select("Address", get_sensors())
-    bias = Property.Number(
+    a_address = Property.Select("Address", get_sensors())
+    b_bias = Property.Number(
         ifelse_celcius("Bias (°C)", "Bias (°F)"),
         True,
         0.0,
         description=bias_description,
     )
-    linear_coef = Property.Number(
+    b_linear_coef = Property.Number(
         "Linear calibration coeficient", True, 1.0, description=linear_coef_description
     )
-    quadratic_coef = Property.Number(
+    b_quadratic_coef = Property.Number(
         "Quadratic calibration coeficient",
         True,
         0.0,
         description=quadratic_coef_description,
     )
-    alpha = Property.Number(
+    c_alpha = Property.Number(
         "Exponential moving average parameter (α)",
         True,
         1.0,
         description=alpha_description,
     )
-    precision = Property.Select(
+    d_precision = Property.Select(
         "Precision (bits)",
         [9, 10, 11, 12],
         description=ifelse_celcius(precision_description_C, precision_description_F),
     )
-    update_interval = Property.Number(
+    e_update_interval = Property.Number(
         "Update interval (ms)", True, 5000, description=update_description
     )
-    low_filter = Property.Number(
+    f_low_filter = Property.Number(
         ifelse_celcius(
             "Low value filter threshold (°C)", "Low value filter threshold (°F)"
         ),
@@ -127,7 +107,7 @@ class OneWireTweaks(SensorActive):
         ifelse_celcius(0, 32),
         description=low_filter_description,
     )
-    high_filter = Property.Number(
+    f_high_filter = Property.Number(
         ifelse_celcius(
             "High value filter threshold (°C)", "High value filter threshold (°F)"
         ),
@@ -135,13 +115,13 @@ class OneWireTweaks(SensorActive):
         ifelse_celcius(100, 212),
         description=high_filter_description,
     )
-    timeout1 = Property.Number(
+    g_timeout1 = Property.Number(
         "Filtered value notification duration (ms)",
         True,
         5000,
         description=timeout_description,
     )
-    timeout2 = Property.Number(
+    g_timeout2 = Property.Number(
         "Update error notification duration (ms)",
         True,
         5000,
@@ -161,22 +141,22 @@ class OneWireTweaks(SensorActive):
 
     def execute(self):
         # Convert all properties
-        address = self.address
-        bias = float(self.bias)
-        linear_coef = float(self.linear_coef)
-        quadratic_coef = float(self.quadratic_coef)
-        alpha = float(self.alpha)
-        precision = int(self.precision)
-        update_interval = float(self.update_interval) / 1000.0
-        low_filter = float(self.low_filter)
-        high_filter = float(self.high_filter)
-        timeout1 = float(self.timeout1)
+        address = self.a_address
+        bias = float(self.b_bias)
+        linear_coef = float(self.b_linear_coef)
+        quadratic_coef = float(self.b_quadratic_coef)
+        alpha = float(self.c_alpha)
+        precision = int(self.d_precision)
+        update_interval = float(self.e_update_interval) / 1000.0
+        low_filter = float(self.f_low_filter)
+        high_filter = float(self.f_high_filter)
+        timeout1 = float(self.g_timeout1)
         if timeout1 <= 0.0:
             notify1 = False
         else:
             notify1 = True
 
-        timeout2 = float(self.timeout2)
+        timeout2 = float(self.g_timeout2)
         if timeout2 <= 0.0:
             notify2 = False
         else:
