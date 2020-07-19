@@ -8,11 +8,10 @@ from modules.core.hardware import SensorActive
 from modules.core.props import Property
 
 
-def ifelse_celcius(x, y):
+def ifelse_celcius(celcius, fahrenheit):
     if cbpi.get_config_parameter("unit", "C") == "C":
-        return x
-    else:
-        return y
+        return celcius
+    return fahrenheit
 
 
 def get_sensors():
