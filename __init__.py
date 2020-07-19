@@ -28,20 +28,23 @@ def get_sensors():
 def set_precision(precision, address):
     if not 9 <= precision <= 12:
         raise ValueError(
-            f"The given sensor precision '{precision}' is out of range (9-12)"
+            "The given sensor precision '{0}' is out of range (9-12)".format(precision)
         )
     exitcode = subprocess.call(
-        f"echo {precision} > /sys/bus/w1/devices/{address}/w1_slave", shell=True,
+        "echo {0} > /sys/bus/w1/devices/{1}/w1_slave".format(precision, address),
+        shell=True,
     )
     if exitcode != 0:
         raise UserWarning(
-            "Failed to change resolution to {precision} bit. You might have to be root to change the precision"
+            "Failed to change resolution to {0} bit. You might have to be root to change the precision".format(
+                precision
+            )
         )
 
 
 def get_temp(address):
     with open(
-        f"/sys/bus/w1/devices/w1_bus_master1/{address}/w1_slave", "r"
+        "/sys/bus/w1/devices/w1_bus_master1/%s/w1_slave" % address, "r"
     ) as content_file:
         content = content_file.read()
         if content.split("\n")[0].split(" ")[11] == "YES":
@@ -187,12 +190,14 @@ class OneWireTweaks(SensorActive):
             except:
                 cbpi.notify(
                     "OneWire Warning",
-                    f"Could not change precision of {address}, may have insufficient permissions",
+                    "Could not change precision of %s, may have insufficient permissions"
+                    % address,
                     timeout=None,
                     type="warning",
                 )
                 cbpi.app.logger.info(
-                    f"[{time.time()}] Could not change precision of {address}, may have insufficient permissions"
+                    "[%s] Could not change precision of %s, may have insufficient permissions"
+                    % (time.time(), address)
                 )
 
             # Wait after attempting precision change before attempting to read temperature
@@ -210,7 +215,8 @@ class OneWireTweaks(SensorActive):
                     # Notify after 50 warnings
                     cbpi.notify(
                         "OneWire Warning",
-                        f"There have been >50 warnings logged associated with sensor {address}. It is suggested you recheck your hardware and/or adjust plugin settings",
+                        "There have been >50 warnings logged associated with sensor %s. It is suggested you recheck your hardware and/or adjust plugin settings"
+                        % address,
                         type="warning",
                     )
                     # Reset the counter
@@ -226,11 +232,12 @@ class OneWireTweaks(SensorActive):
                         warn_count += 1
                         cbpi.notify(
                             "OneWire Warning",
-                            f"Communication error with {address} detected",
+                            "Communication error with %s detected" % address,
                             type="warning",
                         )
                         cbpi.app.logger.info(
-                            f"[{waketime}] Communication error with {address} detected"
+                            "[%s] Communication error with %s detected"
+                            % (waketime, address)
                         )
                     # Proceed with valid temperature readings
                     else:
@@ -266,14 +273,16 @@ class OneWireTweaks(SensorActive):
                             warn_count += 1
                             # Add to logger
                             cbpi.app.logger.info(
-                                f"[{waketime}] {address} reading of {round(current_temp, 1)} filtered"
+                                "[%s] %s reading of %s filtered"
+                                % (waketime, address, round(current_temp, 1))
                             )
 
                             # Produce a notification if requested
                             if notify1:
                                 cbpi.notify(
                                     "OneWire Warning",
-                                    f"{address} reading of {round(current_temp, 1)} filtered",
+                                    "%s reading of %s filtered"
+                                    % (address, round(current_temp, 1)),
                                     timeout=timeout1,
                                     type="warning",
                                 )
@@ -284,13 +293,15 @@ class OneWireTweaks(SensorActive):
                     warn_count += 1
                     # Add to logger
                     cbpi.app.logger.info(
-                        f"[{waketime}] reading of {address} could not complete within update interval"
+                        "[%s] reading of %s could not complete within update interval"
+                        % (waketime, address)
                     )
                     # Produce a notification if requested
                     if notify2:
                         cbpi.notify(
                             "OneWire Warning",
-                            f"Reading of {address} could not complete within update interval",
+                            "Reading of %s could not complete within update interval"
+                            % address,
                             timeout=timeout2,
                             type="warning",
                         )
