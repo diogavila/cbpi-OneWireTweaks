@@ -17,8 +17,14 @@ This CraftBeerPi 3.0 plugin was based on [OneWireAdvanced](https://github.com/ja
 - Clone the repo into the CBPi3 _plugins_ directory:
 
 ```
-cd craftbeerpi3/modules/plugins
-git clone https://github.com/diogavila/cbpi-OneWireTweaks.git ~/craftbeerpi3/modules/plugins/OneWireTweaks      ### CHANGE THIS TO YOUR CBPi3 DIRECTORY
+cd craftbeerpi3/modules/plugins   ### CHANGE THIS TO YOUR CBPi3 DIRECTORY
+git clone https://github.com/diogavila/cbpi-OneWireTweaks.git
+```
+
+For one-liners:
+
+```
+git clone https://github.com/diogavila/cbpi-OneWireTweaks.git ~/craftbeerpi3/modules/plugins/OneWireTweaks
 ```
 
 - Restart CraftBeerPi3.
